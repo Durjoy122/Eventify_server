@@ -8,9 +8,6 @@ const port = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
 
-/*const uri = "mongodb+srv://socialDbUser:yLWG3k6kwC59quIj@myfirstmongodb.noasusn.mongodb.net/?appName=MyFirstMongoDb";*/
-
-// Connection URI from MongoDB atlas
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@myfirstmongodb.noasusn.mongodb.net/?appName=MyFirstMongoDb`;
 
 const client = new MongoClient(uri, {
