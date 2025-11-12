@@ -18,22 +18,13 @@ const client = new MongoClient(uri, {
     }
 });
 
-
-let eventCollection;
-
 async function run() {
     try {
         await client.connect();  
         const db = client.db("socialDb"); // Your database name you can use any name 
         const userCollection = db.collection('users');
-        eventCollection = db.collection('events');
+        const eventCollection = db.collection('events');
         const joinCollection = db.collection('joinedEvents');
-        app.get('/test' , async(req, res)=> {
-            res.send("Hello");
-        })
-        app.get('/', (req, res) => {
-   res.send('Hello World!')
-})
         app.post('/users' , async(req , res) => {
             const newUser = req.body;
             const email = req.body.email;
@@ -52,7 +43,31 @@ async function run() {
             const result = await eventCollection.insertOne(newEvent);
             res.send(result);
         });
-        
+        app.get('/events', async (req, res) => {
+            try {
+                const { search, type } = req.query;
+                const today = new Date();
+                const query = {
+                    eventDate: { $gte: today.toISOString() }, // show only upcoming events
+                };
+                if(search) {
+                    query.title = { $regex: search, $options: 'i' }; // case-insensitive search
+                }
+                if(type && type !== 'All') {
+                    query.eventType = type;
+                }
+                const events = await eventCollection
+                    .find(query)
+                    .sort({ eventDate: 1 })
+                    .toArray();
+
+                res.send(events);
+            } 
+            catch (error) {
+                console.error('Error loading events:', error);
+                res.status(500).send({ message: 'Failed to load events', error });
+            }
+        });
         app.get('/events/:id' , async(req , res) => {
             const id = req.params.id;
             const query = {_id: new ObjectId(id)}
@@ -199,43 +214,13 @@ async function run() {
     finally {
         
     }
-
-
 }
 
+run().catch(console.dir);
 
-run().then(()=>{
-
-    app.get('/events', async (req, res) => {
-            try {
-                const { search, type } = req.query;
-                const today = new Date();
-                const query = {
-                    eventDate: { $gte: today.toISOString() }, // show only upcoming events
-                };
-                if(search) {
-                    query.title = { $regex: search, $options: 'i' }; // case-insensitive search
-                }
-                if(type && type !== 'All') {
-                    query.eventType = type;
-                }
-                const events = await eventCollection
-                    .find(query)
-                    .sort({ eventDate: 1 })
-                    .toArray();
-
-                res.send(events);
-            } 
-            catch (error) {
-                console.error('Error loading events:', error);
-                res.status(500).send({ message: 'Failed to load events', error });
-            }
-        });
-
-
-}).catch(console.dir);
-
-
+app.get('/', (req, res) => {
+   res.send('Hello World!')
+})
 
 app.listen(port, () => {
    console.log(`Example app listening on port ${port}`)
