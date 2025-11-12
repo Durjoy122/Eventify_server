@@ -154,7 +154,7 @@ async function run() {
                 if (!event) return res.status(404).send({ message: "Event not found" });
 
                 if (event.userEmail !== updatedEvent.userEmail) {
-                return res.status(403).send({ message: "You cannot update this event" });
+                   return res.status(403).send({ message: "You cannot update this event" });
                 }
 
                 // Update main event
@@ -207,8 +207,8 @@ async function run() {
                 console.error("Error deleting event:", error);
                 res.status(500).send({ message: "Failed to delete event", error });
             }
-       });
-         await client.db("admin").command({ ping: 1 }); // Send a ping to confirm a successful connection
+        });
+         //await client.db("admin").command({ ping: 1 }); // Send a ping to confirm a successful connection
          console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } 
     finally {
