@@ -204,9 +204,9 @@ async function run() {
 }
 
 
-run().catch(console.dir);
+run().then(()=>{
 
-app.get('/events', async (req, res) => {
+    app.get('/events', async (req, res) => {
             try {
                 const { search, type } = req.query;
                 const today = new Date();
@@ -231,6 +231,10 @@ app.get('/events', async (req, res) => {
                 res.status(500).send({ message: 'Failed to load events', error });
             }
         });
+
+
+}).catch(console.dir);
+
 
 
 app.listen(port, () => {
