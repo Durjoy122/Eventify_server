@@ -25,6 +25,9 @@ async function run() {
         const userCollection = db.collection('users');
         const eventCollection = db.collection('events');
         const joinCollection = db.collection('joinedEvents');
+        app.get('/test' , async(req, res)=> {
+             res.send("Hello");
+        })
         app.post('/users' , async(req , res) => {
             const newUser = req.body;
             const email = req.body.email;
