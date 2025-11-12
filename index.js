@@ -20,7 +20,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();  
+        //await client.connect();  
         const db = client.db("socialDb"); // Your database name you can use any name 
         const userCollection = db.collection('users');
         const eventCollection = db.collection('events');
