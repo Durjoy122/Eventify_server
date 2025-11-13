@@ -198,7 +198,6 @@ async function run() {
                 // Delete from main events
                 await eventCollection.deleteOne({ _id: new ObjectId(id) });
 
-                // 👇 Delete from joined events too
                 await joinCollection.deleteMany({ eventId: id });
 
                 res.send({ message: "Event and all joined records deleted successfully" });
